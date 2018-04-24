@@ -1,0 +1,40 @@
+PODS:
+  - Adyen (1.18.0):
+    - Adyen/Cards (= 1.18.0)
+    - Adyen/Core (= 1.18.0)
+    - Adyen/Ideal (= 1.18.0)
+    - Adyen/SEPADirectDebit (= 1.18.0)
+    - Adyen/UI (= 1.18.0)
+  - Adyen/Cards (1.18.0):
+    - Adyen/Core
+    - Adyen/CoreUI
+    - AdyenCSE (~> 1.1)
+  - Adyen/Core (1.18.0)
+  - Adyen/CoreUI (1.18.0):
+    - Adyen/Core
+  - Adyen/Ideal (1.18.0):
+    - Adyen/Core
+    - Adyen/CoreUI
+  - Adyen/SEPADirectDebit (1.18.0):
+    - Adyen/Core
+    - Adyen/CoreUI
+  - Adyen/UI (1.18.0):
+    - Adyen/Core
+    - Adyen/CoreUI
+  - AdyenCSE (1.1.1)
+
+DEPENDENCIES:
+  - Adyen
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Adyen
+    - AdyenCSE
+
+SPEC CHECKSUMS:
+  Adyen: 2f53da85aa664a510cd2a56918657006bba3eee2
+  AdyenCSE: c52eb5ef89bd98b8d0aa1214352fe026979ace1a
+
+PODFILE CHECKSUM: 82b17a259280f8bf0cf042b73905be2cae77661e
+
+COCOAPODS: 1.5.0
