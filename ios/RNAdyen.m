@@ -11,9 +11,14 @@
 #endif
 
 
-
 @interface RCT_EXTERN_MODULE(RNAdyen, NSObject)
 
 RCT_EXTERN_METHOD(initializeAdyen)
+
+RCT_EXTERN_METHOD(setPaymentData:(NSDictionary *)data)
+
+RCT_EXTERN_METHOD(setPaymentMethod:(NSString *)methodName)
+
+RCT_EXTERN_METHOD(setCardDetails:(NSDictionary *)cardDetails)
 
 @end

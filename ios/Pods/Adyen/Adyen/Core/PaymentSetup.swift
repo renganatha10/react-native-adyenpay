@@ -35,8 +35,8 @@ internal struct PaymentSetup {
             let generationDateString = dictionary["generationtime"] as? String,
             let generationDate = dateFormatter.date(from: generationDateString),
             let paymentData = dictionary["paymentData"] as? String
-        else {
-            return nil
+            else {
+                return nil
         }
         
         self.amount = amount
@@ -61,10 +61,10 @@ internal struct PaymentSetup {
         let availablePaymentMethodsDictionaries = dictionary["paymentMethods"] as? [[String: Any]] ?? []
         self.availablePaymentMethods = availablePaymentMethodsDictionaries.compactMap {
             return PaymentMethod(info: $0, logoBaseURL: logoBaseURL.absoluteString, isOneClick: false)
-        }.groupBy {
-            return $0.group?.type ?? UUID().uuidString
-        }.compactMap {
-            return $0.count == 1 ? $0.first : PaymentMethod(members: $0)
+            }.groupBy {
+                return $0.group?.type ?? UUID().uuidString
+            }.compactMap {
+                return $0.count == 1 ? $0.first : PaymentMethod(members: $0)
         }
         
         if let lineItemDictionaries = dictionary["lineItems"] as? [[String: Any]] {

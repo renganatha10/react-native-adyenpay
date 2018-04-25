@@ -6,39 +6,210 @@ import AdyenCSE
 
 
 @objc(RNAdyen)
-class RNAdyen :RCTEventEmitter, PaymentRequestDelegate  {
+class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
   
   override func supportedEvents() -> [String]! {
-    return ["getToken"]
-  }
-  
-  func paymentRequest(_ request: PaymentRequest, didFinishWith result: PaymentRequestResult) {
-    print("I am FInisiehed");
+    return ["getToken", "getPreferredMethods", "paymentResult"]
   }
   
   func paymentRequest(_ request: PaymentRequest, requiresPaymentDataForToken token: String, completion: @escaping DataCompletion) {
-    self.sendEvent(withName: "getToken", body: token)    
-  }
+        self.sendEvent(withName: "getToken", body: token)
+        dataComplete =  completion
+      }
   
   func paymentRequest(_ request: PaymentRequest, requiresPaymentMethodFrom preferredMethods: [PaymentMethod]?, available availableMethods: [PaymentMethod], completion: @escaping MethodCompletion) {
-    print("preferredMethods");
+    
+    
+    
+    gloabalPreferedMethods = preferredMethods;
+    globalAvailableMethods = availableMethods;
+    
+    var  serializedAvailableMethods  : Array<Any> = []
+    
+    var  serializedPreferredMethods: Array<Any> = []
+  
+
+    for (_, availableItem) in availableMethods.enumerated() {
+      let item : [String: String] = [
+        "name": availableItem.name,
+        "type": availableItem.type,
+        "imageLogo": availableItem.logoURL?.absoluteString ?? "null",
+      ]
+      serializedAvailableMethods.append(item)
+    }
+    
+    
+    for (_, availableItem) in (preferredMethods?.enumerated())! {
+      let item : [String: String] = [
+        "name": availableItem.name,
+        "type": availableItem.type,
+        "imageLogo": availableItem.logoURL?.absoluteString ?? "null",
+        ]
+      serializedPreferredMethods.append(item)
+    }
+    
+    
+    let allMethods: [String: Any] = [
+      "availableMethods":serializedAvailableMethods,
+      "preferredMethods": serializedPreferredMethods
+    ]
+    
+    self.sendEvent(withName: "getPreferredMethods", body: allMethods)
+    methodComplete = completion;
   }
   
   func paymentRequest(_ request: PaymentRequest, requiresReturnURLFrom url: URL, completion: @escaping URLCompletion) {
-    print(url, "preferredMethods");
+    print("preferredMethods");
   }
   
   func paymentRequest(_ request: PaymentRequest, requiresPaymentDetails details: PaymentDetails, completion: @escaping PaymentDetailsCompletion) {
-    print(details, "PaymentDetails");
+    if let method = request.paymentMethod, method.type == "card" {
+      if let cardDetails = cardDetails,
+        let cardData = cardDetails.cardData(forRequest: request),
+        let publicKey = request.publicKey,
+        let encryptedToken = ADYEncrypter.encrypt(cardData, publicKeyInHex: publicKey) {
+        details.fillCard(token: encryptedToken, storeDetails: cardDetails.shouldStoreDetails)
+        completion(details)
+      } else {
+        // This should be an edge case, so just fail gracefully.
+        // If this becomes a common case, better handling needs to be implemented.
+        request.cancel()
+      }
+    } else {
+      // Do nothing. For now only handle cards.
+    }
   }
   
-  private let url = URL(string: "https://checkoutshopper-test.adyen.com/checkoutshopper/demoserver/setup")!
-  
+  func paymentRequest(_ request: PaymentRequest, didFinishWith result: PaymentRequestResult) {
+    
+
+    var status = "None"
+    
+    switch result {
+    case let .payment(payment):
+      switch payment.status {
+      case .received, .authorised:
+        status = "success"
+      case .error, .refused:
+        status = "failure"
+      case .cancelled:
+        status = "cancelled"
+      }
+    case let .error(error):
+      switch error {
+      case .cancelled:
+        status = "failure"
+      default:
+        status = "cancelled"
+      }
+    }
+    
+    self.sendEvent(withName: "paymentResult", body: status)
+    clearStoredRequestData()
+  }
   
   @objc func initializeAdyen() {
-   let  request = PaymentRequest(delegate: self)
-    request.start();
+    request =  PaymentRequest(delegate: self)
+    request?.start();
   }
+    
+    private struct CardDetails {
+        let name: String
+        let number: String
+        let expiryMonth: String
+        let expiryYear: String
+        let cvc: String
+        let shouldStoreDetails: Bool
+        
+        func cardData(forRequest request: PaymentRequest) -> Data? {
+            guard let generationTime = request.generationTime else {
+                return nil
+            }
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+            dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+            
+            let generationDate = dateFormatter.date(from: generationTime)
+            
+            let card = ADYCard()
+            card.generationtime = generationDate
+            card.holderName = name
+            card.number = number
+            card.expiryMonth = expiryMonth
+            card.expiryYear = expiryYear
+            card.cvc = cvc
+            return card.encode()
+        }
+    }
+  
+  private var request: PaymentRequest?
+  private var dataComplete: DataCompletion?
+  private var methodComplete: MethodCompletion?
+  private var globalAvailableMethods: [PaymentMethod]?
+  private var gloabalPreferedMethods: [PaymentMethod]?
+  private var cardDetails: CardDetails?
+  
+  
+  
+  func setCardDetailsForCurrentRequest(name: String, number: String, expiryDate: String, cvc: String, shouldSave: Bool) {
+    guard expiryDate.count == 5 else {
+      // Do nothing if expiry date is in invalid format.
+      return
+    }
+    
+    var index = expiryDate.index(expiryDate.startIndex, offsetBy: 2)
+    let monthString = expiryDate.substring(to: index)
+    
+    index = expiryDate.index(expiryDate.startIndex, offsetBy: 3)
+    let yearString = "20\(expiryDate.substring(from: index))"
+    
+    cardDetails = CardDetails(name: name, number: number, expiryMonth: monthString, expiryYear: yearString, cvc: cvc, shouldStoreDetails: shouldSave)
+  }
+  
+  @objc(setPaymentData:)
+  func setPaymentData(myDictionary: NSDictionary) {
+    do {
+      let jsonData = try JSONSerialization.data(withJSONObject: myDictionary)
+      dataComplete!(jsonData)
+    } catch {
+      print("something went wrong with parsing json")
+    }
+  }
+    
+    @objc(setCardDetails:)
+    func setCardDetails(cardDetails: NSDictionary) {
+      
+      let name = cardDetails.value(forKeyPath: "name")
+      let number = cardDetails.value(forKeyPath: "number")
+      let expiryDate = cardDetails.value(forKeyPath: "expiryDate")
+      let cvc = cardDetails.value(forKeyPath: "cvc")
+      let shouldSave = cardDetails.value(forKeyPath: "shouldSave")
+      
+      setCardDetailsForCurrentRequest(name: name as! String, number: number as! String, expiryDate: expiryDate as! String, cvc: cvc as! String, shouldSave: (shouldSave != nil));
+      
+    }
+    
+    @objc(setPaymentMethod:)
+    func setPaymentMethod(methodName: String) {
+      
+      
+      if let i = globalAvailableMethods?.index(where: { $0.type == methodName }) {
+        let myDesiredPaymentMethod = globalAvailableMethods![i]
+        methodComplete!(myDesiredPaymentMethod);
+      }
+    }
+  
+  private func clearStoredRequestData() {
+    request = nil
+    methodComplete = nil
+    cardDetails = nil
+    globalAvailableMethods = []
+    gloabalPreferedMethods = []
+    dataComplete = nil    
+  }
+  
 }
 
 

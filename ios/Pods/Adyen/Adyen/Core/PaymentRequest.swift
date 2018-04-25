@@ -285,11 +285,40 @@ public final class PaymentRequest {
                 self?.shopperReference = paymentSetup.shopperReference
                 self?.publicKey = paymentSetup.publicKey
                 self?.generationTime = paymentSetup.generationDateString
-                
+                print("I Am Isider Herer")
                 self?.process(paymentSetup)
             })
         }
     }
+    
+     func processFor(_ paymentSetup: PaymentSetup) {
+        func isPaymentMethodAvailable(_ paymentMethod: PaymentMethod) -> Bool {
+            if paymentMethod.requiresPlugin {
+                guard let plugin = pluginManager?.plugin(for: paymentMethod) else {
+                    return false
+                }
+                
+                if let deviceDependablePlugin = plugin as? DeviceDependablePlugin {
+                    return deviceDependablePlugin.isDeviceSupported
+                }
+            }
+            
+            return true
+        }
+        
+        self.paymentSetup = paymentSetup
+        
+        let preferredMethods = paymentSetup.preferredPaymentMethods.filter(isPaymentMethodAvailable(_:))
+        self.preferredMethods = preferredMethods
+        
+        let availableMethods = paymentSetup.availablePaymentMethods.filter(isPaymentMethodAvailable(_:))
+        self.availableMethods = availableMethods
+        
+        // Suggest available payment methods.
+        self.requestPaymentMethodSelection(fromPreferred: preferredMethods, available: availableMethods)
+    }
+    
+
     
     private func requestPaymentMethodSelection(fromPreferred preferredMethods: [PaymentMethod]?, available availableMethods: [PaymentMethod]) {
         DispatchQueue.main.async {

@@ -8,8 +8,16 @@ const RNEventEmitter = new NativeEventEmitter(RNAdyen);
 
 export default {
   initializeAdyen() {
-    console.log(RNAdyen, 'RNADUEN');
     return RNAdyen.initializeAdyen();
+  },
+  setPaymentData(data) {
+    return RNAdyen.setPaymentData(data);
+  },
+  setCardDetails(data) {
+    return RNAdyen.setCardDetails(data);
+  },
+  setPaymentMethod(data) {
+    return RNAdyen.setPaymentMethod(data);
   },
   RNEventEmitter,
   EXAMPLE_CONSTANT: RNAdyen.EXAMPLE_CONSTANT,

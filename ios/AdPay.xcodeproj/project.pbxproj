@@ -348,7 +348,6 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		A6635D93208F10F80065CD89 /* AdPay-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AdPay-Bridging-Header.h"; sourceTree = "<group>"; };
 		A6635DB9208F10F90065CD89 /* RNAdyen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNAdyen.m; sourceTree = "<group>"; };
-		A6635DBA208F10F90065CD89 /* RNAdyen-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNAdyen-Bridging-Header.h"; sourceTree = "<group>"; };
 		A6635DBB208F10F90065CD89 /* RNAdyen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNAdyen.swift; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		B18423C3A64B8EF0ADFEB0D3 /* Pods-AdPay.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AdPay.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AdPay/Pods-AdPay.debug.xcconfig"; sourceTree = "<group>"; };
@@ -493,7 +492,6 @@
 		13B07FAE1A68108700A75B9A /* AdPay */ = {
 			isa = PBXGroup;
 			children = (
-				A6635DBA208F10F90065CD89 /* RNAdyen-Bridging-Header.h */,
 				A6635DB9208F10F90065CD89 /* RNAdyen.m */,
 				A6635DBB208F10F90065CD89 /* RNAdyen.swift */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
