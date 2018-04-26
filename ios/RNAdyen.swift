@@ -231,10 +231,13 @@ class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
       methodComplete!(myDesiredPaymentMethod);
     }
   }
-    
-  func processExternalPayment(withURL url: URL) {
-    urlCompletion?(url)
+  
+  @objc(setURLCompletion:)
+  func setURLCompletion(url: String) {
+    urlCompletion?(URL(string: url)!);
   }
+    
+  
   
   private func clearStoredRequestData() {
     request = nil

@@ -19,6 +19,9 @@ export default {
   setPaymentMethod(data, id = '') {
     return RNAdyen.setPaymentMethod(data, id);
   },
+  setURLCompletion(url) {
+    return RNAdyen.setURLCompletion(url);
+  },
   RNEventEmitter,
   EXAMPLE_CONSTANT: RNAdyen.EXAMPLE_CONSTANT,
 };

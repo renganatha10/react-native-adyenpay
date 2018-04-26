@@ -150,6 +150,10 @@ export default class App extends Component<Props> {
   };
 
   componentDidMount() {
+    Linking.addEventListener('url', event => {
+      RNAdyen.setURLCompletion(event.url);
+      console.log('I ahve Got Somehong', event);
+    });
     RNAdyen.initializeAdyen();
     this.onSetPaymentData();
     RNAdyen.RNEventEmitter.addListener(
@@ -160,6 +164,7 @@ export default class App extends Component<Props> {
     );
     RNAdyen.RNEventEmitter.addListener('paymentResult', result => {
       console.log('paymentResult', result);
+      alert(result);
     });
 
     RNAdyen.RNEventEmitter.addListener('getRedirectUrlForIdeal', url => {
