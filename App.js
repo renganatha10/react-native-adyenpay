@@ -112,7 +112,7 @@ export default class App extends Component<Props> {
           Properties: {
             MerchantAccount: merchantAccount, // Receive that from GetApplicationConfiguration.Configuration.Adyen:MerchantAccount,
             Channel: 2, // Web = 1, iOS = 2, Android = 3
-            ReturnUrl: 'adpay', // The custom schema of the app
+            ReturnUrl: 'adpay://', // The custom schema of the app
             Token: token,
           },
         };
