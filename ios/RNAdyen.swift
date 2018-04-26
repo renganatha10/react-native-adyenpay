@@ -8,12 +8,25 @@ import AdyenCSE
 @objc(RNAdyen)
 class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
   
+  
+  override func startObserving() {
+    hasListeners = true;
+  }
+  
+  override func stopObserving() {
+    hasListeners = false;
+  }
+  
   override func supportedEvents() -> [String]! {
     return ["getToken", "getPreferredMethods", "paymentResult", "getRedirectUrlForIdeal"]
   }
   
   func paymentRequest(_ request: PaymentRequest, requiresPaymentDataForToken token: String, completion: @escaping DataCompletion) {
-        self.sendEvent(withName: "getToken", body: token)
+    
+    if hasListeners {
+      self.sendEvent(withName: "getToken", body: token)
+    }
+    
         dataComplete =  completion
       }
   
@@ -54,7 +67,11 @@ class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
       "preferredMethods": serializedPreferredMethods
     ]
     
-    self.sendEvent(withName: "getPreferredMethods", body: allMethods)
+    if hasListeners {
+      self.sendEvent(withName: "getPreferredMethods", body: allMethods)
+    }
+    
+    
     methodComplete = completion;
   }
   
@@ -111,6 +128,8 @@ class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
       }
     }
     
+    
+    
     self.sendEvent(withName: "paymentResult", body: status)
     clearStoredRequestData()
   }
@@ -159,6 +178,7 @@ class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
   private var cardDetails: CardDetails?
   private var urlCompletion: URLCompletion?
   private var idealString: String?
+  private var hasListeners = false
   
   
   

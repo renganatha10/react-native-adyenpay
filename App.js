@@ -121,10 +121,8 @@ export default class App extends Component<Props> {
 
         store.dispatch(action2);
 
-        promise2.then(
-          result1 => {
-            console.clear();
-
+        promise2
+          .then(result1 => {
             const { Properties } = result1;
             const { Data } = Properties;
             const { paymentMethods } = Data;
@@ -138,14 +136,10 @@ export default class App extends Component<Props> {
               idealMethods: idealTypeMethods.inputDetails[0].items,
               isLoading: false,
             });
-          },
-          error1 => {
-            console.log('error1', error1);
-            error1.json().then(data1 => {
-              console.log('errorData1', data1);
-            });
-          }
-        );
+          })
+          .catch(err1 => {
+            console.log(err1, 'error1');
+          });
       },
       error => {
         error.json().then(eRRORdata => {
@@ -157,11 +151,7 @@ export default class App extends Component<Props> {
 
   componentDidMount() {
     RNAdyen.initializeAdyen();
-    RNAdyen.RNEventEmitter.addListener('getToken', token => {
-      console.log('My TOken', token);
-
-      this.onSetPaymentData();
-    });
+    this.onSetPaymentData();
     RNAdyen.RNEventEmitter.addListener(
       'getPreferredMethods',
       paymentMethods => {
