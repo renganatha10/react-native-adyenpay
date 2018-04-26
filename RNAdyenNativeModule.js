@@ -16,8 +16,8 @@ export default {
   setCardDetails(data) {
     return RNAdyen.setCardDetails(data);
   },
-  setPaymentMethod(data) {
-    return RNAdyen.setPaymentMethod(data);
+  setPaymentMethod(data, id = '') {
+    return RNAdyen.setPaymentMethod(data, id);
   },
   RNEventEmitter,
   EXAMPLE_CONSTANT: RNAdyen.EXAMPLE_CONSTANT,

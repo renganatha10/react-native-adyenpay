@@ -9,7 +9,7 @@ import AdyenCSE
 class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
   
   override func supportedEvents() -> [String]! {
-    return ["getToken", "getPreferredMethods", "paymentResult"]
+    return ["getToken", "getPreferredMethods", "paymentResult", "getRedirectUrlForIdeal"]
   }
   
   func paymentRequest(_ request: PaymentRequest, requiresPaymentDataForToken token: String, completion: @escaping DataCompletion) {
@@ -59,7 +59,11 @@ class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
   }
   
   func paymentRequest(_ request: PaymentRequest, requiresReturnURLFrom url: URL, completion: @escaping URLCompletion) {
-    print("preferredMethods");
+    
+    print(url, "myirl");
+    self.sendEvent(withName: "getRedirectUrlForIdeal", body: url.absoluteString)
+    urlCompletion = completion
+
   }
   
   func paymentRequest(_ request: PaymentRequest, requiresPaymentDetails details: PaymentDetails, completion: @escaping PaymentDetailsCompletion) {
@@ -76,6 +80,9 @@ class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
         request.cancel()
       }
     } else {
+      
+      details.fillIdeal(issuerIdentifier: idealString!)
+      completion(details)
       // Do nothing. For now only handle cards.
     }
   }
@@ -150,6 +157,8 @@ class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
   private var globalAvailableMethods: [PaymentMethod]?
   private var gloabalPreferedMethods: [PaymentMethod]?
   private var cardDetails: CardDetails?
+  private var urlCompletion: URLCompletion?
+  private var idealString: String?
   
   
   
@@ -191,15 +200,21 @@ class RNAdyen: RCTEventEmitter, PaymentRequestDelegate  {
       
     }
     
-    @objc(setPaymentMethod:)
-    func setPaymentMethod(methodName: String) {
-      
-      
-      if let i = globalAvailableMethods?.index(where: { $0.type == methodName }) {
-        let myDesiredPaymentMethod = globalAvailableMethods![i]
-        methodComplete!(myDesiredPaymentMethod);
-      }
+  @objc(setPaymentMethod:idealId:)
+  func setPaymentMethod(methodName: String, idealId: String) {
+    if methodName == "ideal" {
+      idealString = idealId
     }
+    
+    if let i = globalAvailableMethods?.index(where: { $0.type == methodName }) {
+      let myDesiredPaymentMethod = globalAvailableMethods![i]
+      methodComplete!(myDesiredPaymentMethod);
+    }
+  }
+    
+  func processExternalPayment(withURL url: URL) {
+    urlCompletion?(url)
+  }
   
   private func clearStoredRequestData() {
     request = nil

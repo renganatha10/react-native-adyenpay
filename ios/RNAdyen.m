@@ -17,7 +17,7 @@ RCT_EXTERN_METHOD(initializeAdyen)
 
 RCT_EXTERN_METHOD(setPaymentData:(NSDictionary *)data)
 
-RCT_EXTERN_METHOD(setPaymentMethod:(NSString *)methodName)
+RCT_EXTERN_METHOD(setPaymentMethod:(NSString *)methodName idealId:(NSString *)idealId)
 
 RCT_EXTERN_METHOD(setCardDetails:(NSDictionary *)cardDetails)
 

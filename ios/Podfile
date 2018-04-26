@@ -8,6 +8,8 @@ target 'AdPay' do
   pod 'Adyen'
 
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   post_install do |installer|
     installer.pods_project.targets.each do |target|
       if target.name == 'Adyen'
