@@ -103,7 +103,7 @@ export default class App extends Component<Props> {
         );
 
         const token =
-          'eyJsb2NhbGUiOiJlbl9VUyIsImRldmljZUlkZW50aWZpZXIiOiI2MzRCRTc2Ri02M0JFLTRBREItOEU0Qy1DMkUzNzgwMDVGMkEiLCJkZXZpY2VGaW5nZXJwcmludFZlcnNpb24iOiIxLjAiLCJwbGF0Zm9ybSI6ImlvcyIsImludGVncmF0aW9uIjoiY3VzdG9tIiwib3NWZXJzaW9uIjoiMTEuMiIsInNka1ZlcnNpb24iOiIxLjE2LjAiLCJhcGlWZXJzaW9uIjoiNiIsImRldmljZU1vZGVsIjoieDg2XzY0In0=';
+          'eyJkZXZpY2VGaW5nZXJwcmludFZlcnNpb24iOiIxLjEiLCJwbGF0Zm9ybSI6ImFuZHJvaWQiLCJhcGlWZXJzaW9uIjoiNiIsIm9zVmVyc2lvbiI6MjUsInNka1ZlcnNpb24iOiIxLjE0LjEiLCJkZXZpY2VJZGVudGlmaWVyIjoiOWQ0OWZmZDdjZDNhMWNhZSIsImxvY2FsZSI6ImVuX0lOIiwiaW50ZWdyYXRpb24iOiJjdXN0b20iLCJkZXZpY2VNb2RlbCI6Im1vdG9yb2xhIGhhcnBpYSJ9';
 
         const x = {
           OrderID: orderID,
@@ -152,7 +152,6 @@ export default class App extends Component<Props> {
   componentDidMount() {
     Linking.addEventListener('url', event => {
       RNAdyen.setURLCompletion(event.url);
-      console.log('I ahve Got Somehong', event);
     });
     RNAdyen.initializeAdyen();
     this.onSetPaymentData();
@@ -171,10 +170,6 @@ export default class App extends Component<Props> {
       console.log('getRedirectUrlForIdeal', url);
       Linking.openURL(url);
     });
-  }
-
-  componentWillUnmount() {
-    RNAdyen.RNEventEmitter.removeAllListeners();
   }
 
   onSetPaymentData = () => {
