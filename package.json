@@ -1,0 +1,15 @@
+{
+  "name": "react-native-adyenpay",
+  "version": "0.0.1",
+  "description": "Adyen Support For React Native Library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["react-native"],
+  "author": "Renganatha<renganatha10@gmail.com",
+  "license": "",
+  "peerDependencies": {
+    "react-native": "^0.41.2"
+  }
+}
