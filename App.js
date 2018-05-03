@@ -51,6 +51,8 @@ export default class App extends Component<Props> {
     this.state = {
       idealMethods: [],
       isLoading: true,
+      paymentMethods: [],
+      pageView: 0,
     };
   }
 
@@ -81,7 +83,6 @@ export default class App extends Component<Props> {
     store.dispatch(action);
     promise.then(
       res => {
-        console.log(res, 'Create Cusotmer');
         const uid = res.User.ID;
         const totalAmount = totalAmount;
         const [action1, promise1] = attachCustomerToOrder.createFetchAction({
@@ -92,15 +93,6 @@ export default class App extends Component<Props> {
         store.dispatch(action1);
 
         const merchantAccount = `RIT-TST-GLOBAL`;
-
-        promise1.then(
-          result => {
-            console.log('result aaya', result);
-          },
-          error => {
-            console.log('error aaya', error);
-          }
-        );
 
         const token =
           'eyJkZXZpY2VGaW5nZXJwcmludFZlcnNpb24iOiIxLjEiLCJwbGF0Zm9ybSI6ImFuZHJvaWQiLCJhcGlWZXJzaW9uIjoiNiIsIm9zVmVyc2lvbiI6MjUsInNka1ZlcnNpb24iOiIxLjE0LjEiLCJkZXZpY2VJZGVudGlmaWVyIjoiOWQ0OWZmZDdjZDNhMWNhZSIsImxvY2FsZSI6ImVuX0lOIiwiaW50ZWdyYXRpb24iOiJjdXN0b20iLCJkZXZpY2VNb2RlbCI6Im1vdG9yb2xhIGhhcnBpYSJ9';
@@ -125,14 +117,16 @@ export default class App extends Component<Props> {
           .then(result1 => {
             const { Properties } = result1;
             const { Data } = Properties;
+
+            console.log(Data, 'Data From The Create Fetch Action Methods');
             const { paymentMethods } = Data;
 
             const idealTypeMethods = paymentMethods.find(
               item => item.type === 'ideal'
             );
-            console.log('result1', idealTypeMethods.inputDetails[0].items);
             RNAdyen.setPaymentData(Data);
             this.setState({
+              paymentMethods: Data.paymentMethods,
               idealMethods: idealTypeMethods.inputDetails[0].items,
               isLoading: false,
             });
@@ -181,7 +175,6 @@ export default class App extends Component<Props> {
 
     promise
       .then(res => {
-        console.log(res, 'Contifrguration');
         const [action, promise1] = addProductToOrder.createFetchAction({
           ProductID: 177653,
           QuantityOrdered: 1,
@@ -191,7 +184,6 @@ export default class App extends Component<Props> {
         store.dispatch(action);
 
         promise1.then(response => {
-          console.log(response, 'addProdumct to order');
           const { ShoppingCart, TotalAmountInTax } = response;
           this.createCustomers(ShoppingCart.ID, TotalAmountInTax);
         });
@@ -199,24 +191,82 @@ export default class App extends Component<Props> {
       .catch(err => console.log(err));
   };
 
-  // onSetCardDetails = () => {
-  //   RNAdyen.setCardDetails({
-  //     name: 'Renga',
-  //     number: '4111111111111111',
-  //     expiryDate: '08/18',
-  //     cvc: '737',
-  //     shouldSave: true,
-  //   });
-  // };
+  onSetCardDetails = type => {
+    let cardDetails = {};
+    if (type === 'mc') {
+      cardDetails = {
+        name: 'Renga',
+        number: '2223000048410010',
+        expiryDate: '08/18',
+        cvc: '737',
+        shouldSave: true,
+      };
+    } else if (type === 'visa') {
+      cardDetails = {
+        name: 'Renga',
+        number: '4111111111111111',
+        expiryDate: '08/18',
+        cvc: '737',
+        shouldSave: true,
+      };
+    } else if (type === 'amex') {
+      cardDetails = {
+        name: 'Renga',
+        number: '370000000000002',
+        expiryDate: '08/18',
+        cvc: '7373',
+        shouldSave: true,
+      };
+    } else if (type === 'maestro') {
+      cardDetails = {
+        name: 'Renga',
+        number: '4111111111111111',
+        expiryDate: '08/18',
+        cvc: '737',
+        shouldSave: true,
+      };
+    } else if (type === 'diners') {
+      cardDetails = {
+        name: 'Renga',
+        number: '36006666333344',
+        expiryDate: '08/18',
+        cvc: '737',
+        shouldSave: true,
+      };
+    } else if (type === 'discover') {
+      cardDetails = {
+        name: 'Renga',
+        number: '6445644564456445',
+        expiryDate: '08/18',
+        cvc: '737',
+        shouldSave: true,
+      };
+    }
 
-  onSetPaymentMethods = idealId => {
-    RNAdyen.setPaymentMethod('ideal', idealId);
+    RNAdyen.setCardDetails(cardDetails);
+  };
+
+  onSetPaymentMethods = item => {
+    if (item.type === 'ideal') {
+      this.onSetPaymentMethodsForIdeal('1121');
+    } else if (item.group && item.group.type === 'card') {
+      this.onSetCardDetails(item.type);
+      this.onSetPaymentMethodsForCards('card');
+    }
+  };
+
+  onSetPaymentMethodsForCards = methodName => {
+    RNAdyen.setPaymentMethodForCard(methodName);
+  };
+
+  onSetPaymentMethodsForIdeal = id => {
+    RNAdyen.setPaymentMethodForIdeal('ideal', id);
   };
 
   render() {
-    const { idealMethods, isLoading } = this.state;
+    const { idealMethods, isLoading, paymentMethods } = this.state;
 
-    console.log(idealMethods, 'Idela Methis');
+    console.log(paymentMethods, 'paymentMethods');
 
     return (
       <View style={styles.container}>
@@ -226,17 +276,21 @@ export default class App extends Component<Props> {
           </View>
         ) : (
           <ScrollView style={{ paddingHorizontal: 30 }}>
-            <Text style={styles.header}>iDeal methods</Text>
-            {idealMethods.map(item => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.button}
-                onPress={() => this.onSetPaymentMethods(item.id)}
-              >
-                <Image style={styles.img} source={{ uri: item.imageUrl }} />
-                <Text style={styles.instructions}>{item.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <Text style={styles.header}>Payment Methods</Text>
+            {paymentMethods.map(item => {
+              console.log(
+                item.group && item.group.type === 'card' ? item.type : ''
+              );
+              return (
+                <TouchableOpacity
+                  key={item.name}
+                  style={styles.button}
+                  onPress={() => this.onSetPaymentMethods(item)}
+                >
+                  <Text style={styles.instructions}>{item.name}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
         )}
       </View>

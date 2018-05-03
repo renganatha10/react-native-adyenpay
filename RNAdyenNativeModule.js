@@ -16,8 +16,11 @@ export default {
   setCardDetails(data) {
     return RNAdyen.setCardDetails(data);
   },
-  setPaymentMethod(data, id = '') {
-    return RNAdyen.setPaymentMethod(data, id);
+  setPaymentMethodForIdeal(data, id = '') {
+    return RNAdyen.setPaymentMethodForIdeal(data, id);
+  },
+  setPaymentMethodForCard(data) {
+    return RNAdyen.setPaymentMethodForCard(data);
   },
   setURLCompletion(url) {
     return RNAdyen.setURLCompletion(url);
