@@ -1,6 +1,6 @@
 {
   "name": "react-native-adyenpay",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Adyen Support For React Native Library",
   "main": "index.js",
   "scripts": {
@@ -18,9 +18,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/renganatha10/adyen.git"
+    "url": "https://github.com/renganatha10/react-native-adyenpay.git"
   },
-  "homepage": "https://github.com/renganatha10/adyen#readme",
+  "homepage": "https://github.com/renganatha10/react-native-adyenpay#readme",
   "author": "Renganatha <https://twitter.com/renganatha10>",
   "license": "MIT",
   "readmeFilename": "README.md",
