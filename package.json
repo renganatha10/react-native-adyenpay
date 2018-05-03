@@ -1,14 +1,32 @@
 {
   "name": "react-native-adyenpay",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Adyen Support For React Native Library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["react-native"],
-  "author": "Renganatha<renganatha10@gmail.com",
-  "license": "",
+  "keywords": [
+    "android",
+    "ios",
+    "react",
+    "native",
+    "react-native",
+    "native-modules",
+    "adyen",
+    "rnpm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renganatha10/adyen.git"
+  },
+  "homepage": "https://github.com/renganatha10/adyen#readme",
+  "author": "Renganatha <https://twitter.com/renganatha10>",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devEngines": {
+    "node": "8.x || 9.x"
+  },
   "peerDependencies": {
     "react-native": "^0.41.2"
   }
