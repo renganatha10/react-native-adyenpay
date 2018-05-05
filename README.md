@@ -57,6 +57,30 @@ That is all.
 #### Android
  `react-native link react-native-adyen` should install all the dependency
 
+  ##### caveats
+   Make sure you have the following configuration 
+   1) In your android/app/build.gradle
+
+    android {
+      compileSdkVersion 25
+      buildToolsVersion "25.0.1"
+
+      defaultConfig {
+          ...      
+          targetSdkVersion 25        
+      }
+
+      ....
+    }
+
+   2) In Your AppManifest.xml 
+      <activity
+        ...
+        android:launchMode="singleTask" />
+      </activity>
+
+
+
 ## Usage
 
 
