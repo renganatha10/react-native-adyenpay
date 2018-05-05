@@ -24,5 +24,4 @@ export default {
     return RNAdyen.setURLCompletion(url);
   },
   RNEventEmitter,
-  EXAMPLE_CONSTANT: RNAdyen.EXAMPLE_CONSTANT,
 };

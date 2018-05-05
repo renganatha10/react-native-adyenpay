@@ -3,51 +3,78 @@
 
 ## Getting started
 
-`$ npm install react-native-adyen --save`
+`$ npm install react-native-adyenpay --save`
 
-### Mostly automatic installation
+### Installation
 
 `$ react-native link react-native-adyen`
-
-### Manual installation
 
 
 #### iOS
 
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-adyen` and add `RNAdyen.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libRNAdyen.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
+create Podfile in ios with following content
+
+      platform :ios, '9.0'
+      use_frameworks!
+	  target 'Your Target Name' do
+		  pod 'Adyen',
+	  end
+    		
+      post_install do |installer|
+        installer.pods_project.targets.each do |target|
+          if target.name == 'Adyen'
+            target.build_configurations.each do |config|
+              config.build_settings['SWIFT_VERSION'] = '4.0'
+            end
+          end
+        end
+      end
+
+
+run `pod install`
+
+open YourProject.xcworkspace/
+
+create a group `RNAdyen` under your project *top level* and add files under directory node_modules/react-native-adyen/ios/ReactNativeCharts
+
+choose Group ForBeginner, create a empty swift file, the xcode will prompt creating a bridging file, let's name it `YourProject-Bridging-Header.h`
+
+
+replace content with 
+
+    #import <React/RCTEventEmitter.h>
+    #import <React/RCTBridgeModule.h>
+    #import <React/RCTBridge.h>
+    #import <React/RCTEventDispatcher.h>
+
+set `YourProject-Bridging-Header.h` in `Build Settings -> Swift Compiler - General -> Object-C Bridging Header`   
+
+set `No` in `Build Settings -> Swift Compiler - Version -> User Legacy Swift Language Version` 
+
+click run  or use `react-native run-ios`
+That is all.
 
 #### Android
-
-1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import com.reactlibrary.RNAdyenPackage;` to the imports at the top of the file
-  - Add `new RNAdyenPackage()` to the list returned by the `getPackages()` method
-2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-adyen'
-  	project(':react-native-adyen').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-adyen/android')
-  	```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
-      compile project(':react-native-adyen')
-  	```
-
-#### Windows
-[Read it! :D](https://github.com/ReactWindows/react-native)
-
-1. In Visual Studio add the `RNAdyen.sln` in `node_modules/react-native-adyen/windows/RNAdyen.sln` folder to their solution, reference from their app.
-2. Open up your `MainPage.cs` app
-  - Add `using Adyen.RNAdyen;` to the usings at the top of the file
-  - Add `new RNAdyenPackage()` to the `List<IReactPackage>` returned by the `Packages` method
-
+ `react-native link react-native-adyen` should install all the dependency
 
 ## Usage
-```javascript
-import RNAdyen from 'react-native-adyen';
 
-// TODO: What to do with the module?
-RNAdyen;
-```
+
+```import RNAdyen from react-native-adyenpay```
+
+Considering you want to Build Custom UI using Adyen
+
+### Methods and Events
+  ### Methods
+     initializeAdyen() - To Initialize the Adyen
+     setPaymentData(responseFromBackend) - Consider Your calling the API from Javascript Side
+     setCardDetails({ name, cvc, expiryDate, shouldSave, number })
+     setPaymentMethodForIdeal('ideal', idealId)
+	 setPaymentMethodsForCard('card')
+	 setURLCompletion() - Call the function after payment redirection to your app (redirection based payment)
+  ### Events
+     getToken - Gives the Token From SDK     
+	 getRedirectUrlForIdeal - return Redirect URL from Adyen
+     paymentResult - Finally, Results
+	 
   
