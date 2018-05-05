@@ -5,12 +5,55 @@
 
 `$ npm install react-native-adyenpay --save`
 
+
+## Usage
+
+```import RNAdyen from react-native-adyenpay```
+
+Considering you want to Build Custom UI using Adyen
+
+## Methods and Events
+ #### Methods
+   - initializeAdyen() - To Initialize the Adyen
+   - setPaymentData(responseFromBackend) - Consider Your calling   the API from Javascript Side
+   - setCardDetails({ name, cvc, expiryDate, shouldSave, number })
+   - setPaymentMethodForIdeal('ideal', idealId)
+ - setPaymentMethodsForCard('card')
+- setURLCompletion() - Call the function after payment redirection to your app (redirection based payment)
+
+
+ #### Events
+   - getToken - Gives the Token From SDK     
+   - getRedirectUrlForIdeal - return Redirect URL from Adyen
+   - paymentResult - Finally, Results
+	 
+
+### Payment Supported
+ 
+ *[X] Ideal
+
+ *[X] MasterCard
+
+ *[X] Visa 
+
+ *[X] American Express
+
+ *[X] Maestro
+
+ *[ ] Apple Pay
+
+ *[ ] Google Pay
+ 
+ *[ ] Paypal
+ 
+ 
+  
 ### Installation
 
 `$ react-native link react-native-adyen`
 
 
-#### iOS
+### IOS
 
 create Podfile in ios with following content
 
@@ -54,51 +97,34 @@ set `No` in `Build Settings -> Swift Compiler - Version -> User Legacy Swift Lan
 click run  or use `react-native run-ios`
 That is all.
 
-#### Android
+### Android
  `react-native link react-native-adyen` should install all the dependency
 
-  ##### caveats
+ #### caveats
    Make sure you have the following configuration 
    1) In your android/app/build.gradle
 
-    android {
-      compileSdkVersion 25
-      buildToolsVersion "25.0.1"
+```android {
+  compileSdkVersion 25
+  buildToolsVersion "25.0.1"
 
-      defaultConfig {
-          ...      
-          targetSdkVersion 25        
-      }
+  defaultConfig {
+      ...      
+      targetSdkVersion 25        
+  }
 
-      ....
-    }
-
-   2) In Your AppManifest.xml 
-      <activity
-        ...
-        android:launchMode="singleTask" />
-      </activity>
+  ....
+}
+```
 
 
+  2) In Your AppManifest.xml 
+    
+        You need to set the launchMode of MainActivity to single task
 
-## Usage
+    
+    <activity
+        android:name=".MainActivity"
+        android:launchMode="singleTask">
+    
 
-
-```import RNAdyen from react-native-adyenpay```
-
-Considering you want to Build Custom UI using Adyen
-
-### Methods and Events
-  ### Methods
-     initializeAdyen() - To Initialize the Adyen
-     setPaymentData(responseFromBackend) - Consider Your calling the API from Javascript Side
-     setCardDetails({ name, cvc, expiryDate, shouldSave, number })
-     setPaymentMethodForIdeal('ideal', idealId)
-	 setPaymentMethodsForCard('card')
-	 setURLCompletion() - Call the function after payment redirection to your app (redirection based payment)
-  ### Events
-     getToken - Gives the Token From SDK     
-	 getRedirectUrlForIdeal - return Redirect URL from Adyen
-     paymentResult - Finally, Results
-	 
-  
