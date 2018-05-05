@@ -30,21 +30,21 @@ Considering you want to Build Custom UI using Adyen
 
 ### Payment Supported
  
- *[X] Ideal
+ * [x] Ideal
 
- *[X] MasterCard
+ * [x] MasterCard
 
- *[X] Visa 
+ * [x] Visa 
 
- *[X] American Express
+ * [x] American Express
 
- *[X] Maestro
+ * [x] Maestro
 
- *[ ] Apple Pay
+ * [ ] Apple Pay
 
- *[ ] Google Pay
+ * [ ] Google Pay
  
- *[ ] Paypal
+ * [ ] Paypal
  
  
   
